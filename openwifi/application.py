@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import os
 
 import tornado.ioloop
 
+import openwifi.helpers.exit_codes
 import openwifi.web.web_application
 
 
@@ -24,4 +24,4 @@ class Application:
             tornado.ioloop.IOLoop.instance().start()
         except KeyboardInterrupt:
             self._logger.info("Keyboard interrupt.")
-            return os.EX_OK
+            return openwifi.helpers.exit_codes.EX_OK
