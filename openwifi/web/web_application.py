@@ -13,15 +13,21 @@ import openwifi.web
 
 class WebApplication(tornado.web.Application):
     def __init__(self):
+        static_files_path = os.path.dirname(openwifi.static.__file__)
+
         super(WebApplication, self).__init__(
             handlers=[(
                 r"/",
                 openwifi.web.handlers.ui.template_handler.TemplateHandler,
                 {"template_name": "home"},
             ), (
+                r"/(favicon\.(ico|png))",
+                openwifi.web.handlers.static_file_handler.StaticFileHandler,
+                {"path": os.path.join(static_files_path, "ico")}
+            ), (
                 r"/static/(.*)",
                 openwifi.web.handlers.static_file_handler.StaticFileHandler,
-                {"path": os.path.dirname(openwifi.static.__file__)},
+                {"path": static_files_path},
             )],
             gzip=True,
         )
