@@ -2,5 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-Web related classes and functions.
+Runs the tests.
 """
+
+import unittest
+
+
+unittest.main()

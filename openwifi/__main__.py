@@ -1,4 +1,4 @@
-#!/usr/env/bin python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -49,15 +49,24 @@ parser.add_argument(
     metavar="PORT",
     type=int,
 )
+parser.add_argument(
+    "--log-level",
+    choices=["DEBUG", "INFO", "WARN", "ERROR", "CRITICAL"],
+    default=logging.INFO,
+    dest="log_level",
+    help="logging level",
+)
 
 
 try:
     args = parser.parse_args()
+    # Configure logging.
     logging.basicConfig(
         format="%(asctime)s [%(process)d] %(name)s %(levelname)s: %(message)s",
-        level=logging.INFO,
+        level=getattr(logging, args.log_level),
         stream=args.log_file,
     )
+    # Run the main function.
     sys.exit(
         openwifi.application.Application().main(parser.parse_args()) or
         openwifi.helpers.exit_codes.EX_OK
