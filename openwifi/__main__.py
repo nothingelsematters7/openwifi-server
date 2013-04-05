@@ -10,8 +10,13 @@ import argparse
 import logging
 import sys
 
-import openwifi.application
 import openwifi.helpers.exit_codes
+
+try:
+    import openwifi.application
+except ImportError as ex:
+    print(str(ex), file=sys.stderr)
+    sys.exit(openwifi.helpers.exit_codes.EX_SOFTWARE)
 
 
 parser = argparse.ArgumentParser(
@@ -50,5 +55,5 @@ try:
         openwifi.helpers.exit_codes.EX_OK
     )
 except Exception as ex:
-    print(str(ex), file=sys.stdout)
+    print(type(ex), file=sys.stderr)
     sys.exit(openwifi.helpers.exit_codes.EX_USAGE)
