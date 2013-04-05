@@ -52,7 +52,7 @@ parser.add_argument(
 parser.add_argument(
     "--log-level",
     choices=["DEBUG", "INFO", "WARN", "ERROR", "CRITICAL"],
-    default=logging.INFO,
+    default="INFO",
     dest="log_level",
     help="logging level",
 )
@@ -72,5 +72,5 @@ try:
         openwifi.helpers.exit_codes.EX_OK
     )
 except Exception as ex:
-    print(type(ex), file=sys.stderr)
+    print(str(ex), file=sys.stderr)
     sys.exit(openwifi.helpers.exit_codes.EX_USAGE)
