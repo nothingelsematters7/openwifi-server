@@ -35,9 +35,17 @@ parser.add_argument(
 )
 parser.add_argument(
     "--port",
-    default=8888,
-    dest="port",
-    help="application port",
+    default=8080,
+    dest="http_port",
+    help="application HTTP port",
+    metavar="PORT",
+    type=int,
+)
+parser.add_argument(
+    "--https-port",
+    default=8443,
+    dest="https_port",
+    help="application HTTPS port",
     metavar="PORT",
     type=int,
 )
