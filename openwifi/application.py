@@ -6,8 +6,10 @@ import os
 
 import tornado.httpserver
 import tornado.ioloop
+import tornado.locale
 
 import openwifi.helpers.exit_codes
+import openwifi.static
 import openwifi.web.web_application
 
 
@@ -44,8 +46,14 @@ class Application:
             https_server.listen(args.https_port)
         else:
             self._logger.info("Not using HTTPS.")
-
+        # Load translations.
+        self._logger.info("Loading translations ...")
+        tornado.locale.load_translations(
+            os.path.join(os.path.dirname(openwifi.static.__file__), "translations"),
+        )
+        tornado.locale.set_default_locale("en")
         # Start I/O loop.
+        self._logger.info("I/O loop is being started.")
         try:
             tornado.ioloop.IOLoop.instance().start()
         except KeyboardInterrupt:
