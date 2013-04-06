@@ -6,21 +6,15 @@ import logging
 import tornado.locale
 import tornado.web
 
-import openwifi.web.handlers.ui.base_ui_handler
+import openwifi.web.handlers.ui.base_handler
 
 
-class TemplateHandler(openwifi.web.handlers.ui.base_ui_handler.BaseUiHandler):
+class TemplateHandler(openwifi.web.handlers.ui.base_handler.BaseHandler):
     """
     Request handler that renders a template.
     """
 
-    def __init__(self, application, request, template_name, **kwargs):
-        super(TemplateHandler, self).__init__(
-            application,
-            request,
-            **kwargs
-        )
-
+    def initialize(self, template_name):
         self._logger = logging.getLogger(TemplateHandler.__name__)
         self._template_name = template_name
 

@@ -4,6 +4,8 @@
 import logging
 import os
 
+import pymongo
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.locale
@@ -22,7 +24,15 @@ class Application:
         self._logger = logging.getLogger(Application.__name__)
 
     def main(self, args):
-        web_application = openwifi.web.web_application.WebApplication()
+        # Initializing the database connection.
+        self._logger.info("Connecting to the database ...")
+        mongo_client = pymongo.MongoClient()
+        db = mongo_client.openwifi
+        self._logger.info("Creating indexes ...")
+        db.scan_results.ensure_index([("timestamp", pymongo.ASCENDING)])
+        # Initializing the web application.
+        self._logger.info("Initializing the web application ...")
+        web_application = openwifi.web.web_application.WebApplication(db)
 
         # Set up HTTP server.
         self._logger.info("HTTP port %s.", args.http_port)

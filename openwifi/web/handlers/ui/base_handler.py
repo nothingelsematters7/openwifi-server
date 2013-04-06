@@ -9,7 +9,7 @@ import openwifi.static
 import openwifi.web.handlers.base_handler
 
 
-class BaseUiHandler(openwifi.web.handlers.base_handler.BaseHandler):
+class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
     """
     Base request handler for user interface.
     """

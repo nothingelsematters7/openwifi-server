@@ -1,2 +1,3 @@
+pymongo
 pystache>=0.5.3
 tornado>=3.0
