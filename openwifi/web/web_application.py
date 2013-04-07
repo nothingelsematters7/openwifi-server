@@ -24,6 +24,10 @@ class WebApplication(tornado.web.Application):
                 openwifi.web.handlers.ui.template_handler.TemplateHandler,
                 {"template_name": "home"},
             ), (
+                r"/(robots.txt)",
+                openwifi.web.handlers.static_file_handler.StaticFileHandler,
+                {"path": static_files_path},
+            ), (
                 r"/(favicon\.(ico|png))",
                 openwifi.web.handlers.static_file_handler.StaticFileHandler,
                 {"path": os.path.join(static_files_path, "ico")}
