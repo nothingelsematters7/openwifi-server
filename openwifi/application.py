@@ -3,6 +3,7 @@
 
 import logging
 import os
+import sys
 
 import pymongo
 import pymongo.database
@@ -70,6 +71,9 @@ class Application:
             os.path.join(os.path.dirname(openwifi.static.__file__), "translations"),
         )
         tornado.locale.set_default_locale("en")
+        # Fork if requested.
+        if args.fork:
+            self._fork()
         # Start I/O loop.
         self._logger.info("I/O loop is being started.")
         try:
@@ -77,3 +81,21 @@ class Application:
         except KeyboardInterrupt:
             self._logger.info("Keyboard interrupt.")
             return openwifi.helpers.exit_codes.EX_OK
+
+    def _fork(self):
+        # Do the first fork.
+        if os.fork():
+            self._logger.info("Exiting because of fork.")
+            sys.exit(openwifi.helpers.exit_codes.EX_OK)
+        # Decouple from parent environment.
+        os.chdir("/")
+        os.setsid()
+        os.umask(0)
+        # Do the second fork.
+        pid = os.fork()
+        if pid:
+            self._logger.info("Exiting because of fork.")
+            self._logger.info("PID: %s", pid)
+            sys.exit(openwifi.helpers.exit_codes.EX_OK)
+        # Done.
+        self._logger.info("Forked.")

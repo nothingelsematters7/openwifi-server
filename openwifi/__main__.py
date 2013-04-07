@@ -72,6 +72,13 @@ parser.add_argument(
     default=False,
     help="run in test mode",
 )
+parser.add_argument(
+    "--fork",
+    action="store_true",
+    dest="fork",
+    default=False,
+    help="fork server process",
+)
 
 
 try:
