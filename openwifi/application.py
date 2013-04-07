@@ -5,6 +5,7 @@ import logging
 import os
 
 import pymongo
+import pymongo.database
 
 import tornado.httpserver
 import tornado.ioloop
@@ -24,15 +25,19 @@ class Application:
         self._logger = logging.getLogger(Application.__name__)
 
     def main(self, args):
+        # Checking for test mode.
+        if args.test_mode and not "test" in args.database_name:
+            self._logger.fatal("Database name must contain \"test\" substring in test mode.")
+            return openwifi.helpers.exit_codes.EX_USAGE
         # Initializing the database connection.
         self._logger.info("Connecting to the database ...")
         mongo_client = pymongo.MongoClient()
-        db = mongo_client.openwifi
+        db = pymongo.database.Database(mongo_client, args.database_name)
         self._logger.info("Creating indexes ...")
         db.scan_results.ensure_index([("timestamp", pymongo.ASCENDING)])
         # Initializing the web application.
         self._logger.info("Initializing the web application ...")
-        web_application = openwifi.web.web_application.WebApplication(db)
+        web_application = openwifi.web.web_application.WebApplication(db, args.test_mode)
 
         # Set up HTTP server.
         self._logger.info("HTTP port %s.", args.http_port)

@@ -58,6 +58,20 @@ parser.add_argument(
     dest="log_level",
     help="logging level",
 )
+parser.add_argument(
+    "--database",
+    default="openwifi",
+    dest="database_name",
+    help="database name",
+    metavar="DATABASE_NAME",
+)
+parser.add_argument(
+    "--test-mode",
+    action="store_true",
+    dest="test_mode",
+    default=False,
+    help="run in test mode",
+)
 
 
 try:

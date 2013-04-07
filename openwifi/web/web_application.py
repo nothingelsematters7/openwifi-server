@@ -6,6 +6,7 @@ import os
 
 import tornado.web
 
+import openwifi.web.handlers.api.info_handler
 import openwifi.web.handlers.api.scan_results_handler
 import openwifi.web.handlers.static_file_handler
 import openwifi.web.handlers.ui.template_handler
@@ -14,7 +15,7 @@ import openwifi.web
 
 
 class WebApplication(tornado.web.Application):
-    def __init__(self, db):
+    def __init__(self, db, test_mode=False):
         static_files_path = os.path.dirname(openwifi.static.__file__)
 
         super(WebApplication, self).__init__(
@@ -31,9 +32,13 @@ class WebApplication(tornado.web.Application):
                 openwifi.web.handlers.static_file_handler.StaticFileHandler,
                 {"path": static_files_path},
             ), (
-                r"/scan-results/(.*)",
+                r"/api/scan-results/",
                 openwifi.web.handlers.api.scan_results_handler.ScanResultsHandler,
                 {"db": db},
+            ), (
+                r"/api/info/",
+                openwifi.web.handlers.api.info_handler.InfoHandler,
+                {"test_mode": test_mode}
             )],
             gzip=True,
         )
