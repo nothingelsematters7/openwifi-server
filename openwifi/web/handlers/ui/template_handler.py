@@ -16,6 +16,8 @@ class TemplateHandler(openwifi.web.handlers.ui.base_handler.BaseHandler):
 
     # noinspection PyMethodOverriding
     def initialize(self, template_name):
+        super(TemplateHandler, self).initialize()
+
         self._logger = logging.getLogger(TemplateHandler.__name__)
         self._template_name = template_name
 

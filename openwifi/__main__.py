@@ -69,7 +69,10 @@ try:
         stream=args.log_file,
     )
     # Run the main function.
-    logging.info("Starting Open WiFi server %s ...", openwifi.__version__.version)
+    logging.getLogger(__name__).info(
+        "Starting Open WiFi server %s ...",
+        openwifi.__version__.version,
+    )
     sys.exit(
         openwifi.application.Application().main(parser.parse_args()) or
         openwifi.helpers.exit_codes.EX_OK
