@@ -91,8 +91,28 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
 
         pass
 
-    def get(self, timestamp, limit, *args, **kwargs):
-        pass
+    def get(self, timestamp=None, limit=None, *args, **kwargs):
+        if not timestamp or not limit:
+            self._logger.warning("Both timestamp and limit are required.")
+            self.send_error(http.client.BAD_REQUEST)
+            return
+
+        # Check parameters.
+        timestamp = int(timestamp)
+        limit = int(limit)
+        if timestamp < 0 or limit < 0:
+            self._logger.warning("Invalid timestamp and limit: %s.", (timestamp, limit))
+            self.send_error(http.client.BAD_REQUEST)
+            return
+        # Perform query.
+        cursor = self._db.scan_results.find({
+            "ts": {"$gt": timestamp},
+        }, {
+            "_id": False,
+            "cid": False,
+        }).limit(max(limit, 128))
+        # Write response.
+        self.write(json.dumps(list(cursor)))
 
     def post(self, *args, **kwargs):
         scan_result = None

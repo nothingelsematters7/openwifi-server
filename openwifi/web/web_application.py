@@ -36,6 +36,10 @@ class WebApplication(tornado.web.Application):
                 openwifi.web.handlers.api.scan_results_handler.ScanResultsHandler,
                 {"db": db},
             ), (
+                r"/api/scan-results/(\d+)/(\d+)/",
+                openwifi.web.handlers.api.scan_results_handler.ScanResultsHandler,
+                {"db": db},
+            ), (
                 r"/api/info/",
                 openwifi.web.handlers.api.info_handler.InfoHandler,
                 {"test_mode": test_mode}
