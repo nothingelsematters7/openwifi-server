@@ -15,6 +15,9 @@ import openwifi
 
 
 def main(args):
+    global with_sources
+    with_sources = args.with_sources
+
     logging.info("Compressing ...")
     with tarfile.open(mode="w:gz", fileobj=args.output) as tarball:
         tarball.add(
@@ -46,7 +49,15 @@ def _create_argument_parser():
         "--verbose",
         action="store_true",
         default=False,
+        dest="verbose",
         help="verbose mode",
+    )
+    parser.add_argument(
+        "--with-sources",
+        action="store_true",
+        default=False,
+        dest="with_sources",
+        help="add *.py to the archive also",
     )
 
     return parser
@@ -62,7 +73,7 @@ def _filter(tar_info):
         return tar_info
 
     _, extension = os.path.splitext(tar_info.name)
-    if extension in (
+    if extension.lower() in (
         ".pyc",
         ".pyo",
         ".pyc",
@@ -73,6 +84,8 @@ def _filter(tar_info):
         ".csv",
         ".pem",
         ".txt",
+    ) or (
+        extension.lower() == ".py" and with_sources
     ):
         logging.info("Adding file %s", tar_info.name)
         return tar_info
