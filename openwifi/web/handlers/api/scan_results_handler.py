@@ -112,7 +112,9 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
             "cid": False,
         }).limit(max(limit, 128))
         # Write response.
-        self.write(json.dumps(list(cursor)))
+        scan_results = list(cursor)
+        self._logger.debug("Got %s result(s).", len(scan_results))
+        self.write(json.dumps(scan_results))
 
     def post(self, *args, **kwargs):
         scan_result = None
