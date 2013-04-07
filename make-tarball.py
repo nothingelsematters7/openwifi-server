@@ -6,6 +6,7 @@ Makes the Open WiFi server tarball.
 """
 
 import argparse
+import compileall
 import logging
 import os
 import sys
@@ -17,6 +18,12 @@ import openwifi
 def main(args):
     global with_sources
     with_sources = args.with_sources
+
+    logging.info("Compiling into byte-code ...")
+    compileall.compile_dir(
+        dir=os.path.dirname(openwifi.__file__),
+        optimize=2,
+    )
 
     logging.info("Compressing ...")
     with tarfile.open(mode="w:gz", fileobj=args.output) as tarball:
