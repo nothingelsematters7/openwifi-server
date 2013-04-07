@@ -25,7 +25,7 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
 
         pass
 
-    def put(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
         """
         Puts the scan result.
         """
@@ -39,3 +39,5 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
             return
 
         self._logger.debug("Got scan result: %s", scan_result)
+
+        self.write(self._OK_RESPONSE)

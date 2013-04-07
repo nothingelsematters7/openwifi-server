@@ -15,6 +15,8 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
     _CONTENT_TYPE_HEADER = "Content-Type"
     _X_CLIENT_ID_HEADER = "X-Client-ID"
 
+    _OK_RESPONSE = "OK"
+
     def initialize(self):
         super(BaseHandler, self).initialize()
 
@@ -27,8 +29,7 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
         self._client_id = headers.get(self._X_CLIENT_ID_HEADER)
 
         if (
-            headers.get(self._CONTENT_TYPE_HEADER) != "application/json" or
-            not self._client_id
+            headers.get(self._CONTENT_TYPE_HEADER) != "application/json"
         ):
             self._logger.warning("Bad headers.")
             self.send_error(status_code=http.client.BAD_REQUEST)
