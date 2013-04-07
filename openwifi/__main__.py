@@ -10,9 +10,11 @@ import argparse
 import logging
 import sys
 
+import openwifi.__version__
 import openwifi.helpers.exit_codes
 
 try:
+    # noinspection PyUnresolvedReferences
     import openwifi.application
 except ImportError as ex:
     print(str(ex), file=sys.stderr)
@@ -67,6 +69,7 @@ try:
         stream=args.log_file,
     )
     # Run the main function.
+    logging.info("Starting Open WiFi server %s ...", openwifi.__version__.version)
     sys.exit(
         openwifi.application.Application().main(parser.parse_args()) or
         openwifi.helpers.exit_codes.EX_OK

@@ -9,6 +9,7 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
     Scan results request handler.
     """
 
+    # noinspection PyMethodOverriding
     def initialize(self, db):
         self._db = db
 

@@ -14,6 +14,7 @@ class TemplateHandler(openwifi.web.handlers.ui.base_handler.BaseHandler):
     Request handler that renders a template.
     """
 
+    # noinspection PyMethodOverriding
     def initialize(self, template_name):
         self._logger = logging.getLogger(TemplateHandler.__name__)
         self._template_name = template_name
