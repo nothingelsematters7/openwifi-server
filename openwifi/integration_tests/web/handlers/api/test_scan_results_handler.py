@@ -14,5 +14,7 @@ class TestScanResultsHandler(openwifi.integration_tests.BaseTestCase):
     def test_post(self):
         response = requests.post(self._URL, json.dumps({
             "bssid": "00:00:00:00:00:00",
+            "ssid": "test",
+            "ts": 1,
         }))
         self.assertEqual("OK", response.json().get("r"))

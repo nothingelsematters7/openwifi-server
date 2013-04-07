@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import calendar
+import datetime
 import http.client
 import json
 import logging
@@ -20,8 +22,18 @@ def _validate_bssid(value):
     return bool(_bssid_re.match(value))
 
 
+def _validate_timestamp(value):
+    """
+    Validates timestamp.
+    """
+
+    return value < calendar.timegm(datetime.datetime.utcnow().utctimetuple())
+
+
 _validators = {
     "bssid": _validate_bssid,
+    "ssid": len,
+    "ts": _validate_timestamp,
 }
 
 
@@ -53,11 +65,10 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
             self.send_error(status_code=http.client.BAD_REQUEST)
             return
         else:
+            self._logger.debug("Got scan result: %s", scan_result)
             if not isinstance(scan_result, dict) or not self._post(scan_result):
                 self.send_error(status_code=http.client.BAD_REQUEST)
                 return
-
-        self._logger.debug("Got scan result: %s", scan_result)
 
         self.write(self._OK_RESPONSE)
 
@@ -66,15 +77,19 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
         Posts the scan result.
         """
 
-        scan_result_document = dict()
+        scan_result_document = {
+            "cid": self._client_id,
+        }
 
         for key, value in scan_result.items():
             validate = _validators.get(key)
             if not validate:
                 continue
             if not validate(value):
+                self._logger.warning("Validation failed: %s", (key, value))
                 return False
             scan_result_document[key] = value
 
         self._db.scan_results.save(scan_result_document)
+        self._logger.debug("Saved scan result: %s", scan_result_document)
         return True
