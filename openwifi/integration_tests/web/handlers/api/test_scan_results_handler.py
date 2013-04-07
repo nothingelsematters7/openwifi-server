@@ -16,5 +16,10 @@ class TestScanResultsHandler(openwifi.integration_tests.BaseTestCase):
             "bssid": "00:00:00:00:00:00",
             "ssid": "test",
             "ts": 1,
+            "acc": 10.0,
+            "loc": {
+                "lat": 53.87,
+                "lon": 27.54,
+            },
         }))
         self.assertEqual("OK", response.json().get("r"))

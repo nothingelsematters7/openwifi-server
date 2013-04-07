@@ -38,6 +38,7 @@ class Application:
         db = pymongo.database.Database(mongo_client, args.database_name)
         self._logger.info("Creating indexes ...")
         db.scan_results.ensure_index([("ts", pymongo.ASCENDING)])
+        db.scan_results.ensure_index([("loc", pymongo.GEO2D)])
         # Initializing the web application.
         self._logger.info("Initializing the web application ...")
         web_application = openwifi.web.web_application.WebApplication(db, args.test_mode)

@@ -19,7 +19,15 @@ def _validate_bssid(value):
     Validates BSSID.
     """
 
-    return bool(_bssid_re.match(value))
+    return isinstance(value, str) and bool(_bssid_re.match(value))
+
+
+def _validate_ssid(value):
+    """
+    Validates SSID.
+    """
+
+    return isinstance(value, str) and len(value)
 
 
 def _validate_timestamp(value):
@@ -27,13 +35,42 @@ def _validate_timestamp(value):
     Validates timestamp.
     """
 
-    return value < calendar.timegm(datetime.datetime.utcnow().utctimetuple())
+    return (
+        isinstance(value, int) and
+        value < calendar.timegm(datetime.datetime.utcnow().utctimetuple())
+    )
+
+
+def _validate_accuracy(value):
+    """
+    Validate accuracy.
+    """
+
+    return isinstance(value, float) and 0.0 <= value <= 250.0
+
+
+def _validate_location(value):
+    # Check for the type.
+    if not isinstance(value, dict):
+        return False
+    # Extract values.
+    latitude, longitude = map(value.get, ("lat", "lon"))
+    # Check latitude.
+    if not isinstance(latitude, float) or latitude < -90.0 or latitude > +90.0:
+        return False
+    # Check longitude.
+    if not isinstance(longitude, float) or longitude < -180.0 or longitude > +180.0:
+        return False
+    # All validations passed.
+    return True
 
 
 _validators = {
     "bssid": _validate_bssid,
-    "ssid": len,
+    "ssid": _validate_ssid,
     "ts": _validate_timestamp,
+    "acc": _validate_accuracy,
+    "loc": _validate_location,
 }
 
 
@@ -52,6 +89,9 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
     def prepare(self):
         super(ScanResultsHandler, self).prepare()
 
+        pass
+
+    def get(self, timestamp, limit, *args, **kwargs):
         pass
 
     def post(self, *args, **kwargs):
