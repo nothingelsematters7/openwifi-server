@@ -48,7 +48,7 @@ class Application:
         http_server = tornado.httpserver.HTTPServer(web_application)
         http_server.listen(args.http_port)
         # Set up HTTPS server if possible.
-        application_path = os.path.dirname(__file__)
+        application_path = os.path.abspath(os.path.dirname(__file__))
         certificate_path, key_path = (
             os.path.join(application_path, "cacert.pem"),
             os.path.join(application_path, "privkey.pem"),
