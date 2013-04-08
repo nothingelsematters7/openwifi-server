@@ -50,7 +50,7 @@ def _validate_accuracy(value):
     Validate accuracy.
     """
 
-    return isinstance(value, float) and 0.0 <= value <= 250.0
+    return isinstance(value, float) and 0.0 <= value
 
 
 def _validate_location(value):
@@ -76,6 +76,11 @@ _validators = {
     "acc": _validate_accuracy,
     "loc": _validate_location,
 }
+
+
+def _filter_scan_result(scan_result):
+    # Do not accept to large accuracy.
+    return scan_result["acc"] <= 100.0
 
 
 class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
@@ -115,42 +120,46 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
         self.write(json.dumps(scan_results, cls=openwifi.helpers.MongoEncoder))
 
     def post(self, *args, **kwargs):
+        # Deserialize the scan result.
         scan_result = None
         try:
             scan_result = self.request.body.decode("utf-8")
             scan_result = json.loads(scan_result)
         except ValueError:
-            self._logger.warning("Value error.")
-            self._logger.debug("Body: %s", scan_result)
+            self._logger.warning("Value error. Body: %s", scan_result)
             self.send_error(status_code=http.client.BAD_REQUEST)
             return
-        else:
-            self._logger.debug("Got scan result: %s", scan_result)
-            _id = self._post(scan_result)
-            if not isinstance(scan_result, dict) or _id is None:
-                self.send_error(status_code=http.client.BAD_REQUEST)
-                return
-
-        self.write(json.dumps(_id, cls=openwifi.helpers.MongoEncoder))
-
-    def _post(self, scan_result):
-        """
-        Posts the scan result.
-        """
-
-        scan_result_document = {
-            "cid": self._client_id,
-        }
-
+        # Check the scan result type.
+        self._logger.debug("Got scan result: %s", scan_result)
+        if not isinstance(scan_result, dict):
+            self._logger.warning("Scan result is not a dict.")
+            self.send_error(status_code=http.client.BAD_REQUEST)
+            return
+        # Initialize the document to insert.
+        scan_result_document = dict()
         for key, value in scan_result.items():
             validate = _validators.get(key)
             if not validate:
+                # Ignore extra field.
                 continue
+            # Check the value.
             if not validate(value):
                 self._logger.warning("Validation failed: %s", (key, value))
-                return None
+                self.send_error(status_code=http.client.BAD_REQUEST)
+                return
             scan_result_document[key] = value
-
+        if len(scan_result_document) != len(_validators):
+            self._logger.warning("Invalid scan result document size.")
+            self.send_error(status_code=http.client.BAD_REQUEST)
+            return
+        # Check the document value.
+        if not _filter_scan_result(scan_result_document):
+            self._logger.warning("Document is filtered: '%s'.", scan_result_document)
+            self.write("null")
+            return
+        # Insert the document.
+        scan_result_document["cid"] = self._client_id
         _id = self._db.scan_results.insert(scan_result_document, manipulate=True)
         self._logger.debug("Inserted scan result: %s", scan_result_document)
-        return _id
+        # Write response.
+        self.write(json.dumps(_id, cls=openwifi.helpers.MongoEncoder))
