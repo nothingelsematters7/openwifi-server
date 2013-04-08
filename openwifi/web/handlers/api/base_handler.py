@@ -14,8 +14,6 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
     _CONTENT_TYPE_HEADER = "Content-Type"
     _X_CLIENT_ID_HEADER = "X-Client-ID"
 
-    _OK_RESPONSE = "{\"r\": \"OK\"}"
-
     def initialize(self):
         super(BaseHandler, self).initialize()
 

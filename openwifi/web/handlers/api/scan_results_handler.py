@@ -8,6 +8,10 @@ import json
 import logging
 import re
 
+# noinspection PyPackageRequirements
+import bson.objectid
+
+import openwifi.helpers
 import openwifi.web.handlers.api.base_handler
 
 
@@ -86,30 +90,29 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
         self._db = db
         self._logger = logging.getLogger(ScanResultsHandler.__name__)
 
-    def get(self, timestamp=None, limit=None, *args, **kwargs):
-        if not timestamp or not limit:
-            self._logger.warning("Both timestamp and limit are required.")
+    def get(self, last_id=None, limit=None, *args, **kwargs):
+        # Parse parameters.
+        limit = int(limit)
+        if limit < 0:
+            self._logger.warning("Invalid limit: '%s'.", limit)
             self.send_error(http.client.BAD_REQUEST)
             return
-
-        # Check parameters.
-        timestamp = int(timestamp)
-        limit = int(limit)
-        if timestamp < 0 or limit < 0:
-            self._logger.warning("Invalid timestamp and limit: %s.", (timestamp, limit))
+        try:
+            last_id = bson.objectid.ObjectId(last_id)
+        except bson.objectid.InvalidId:
+            self._logger.warning("Invalid last ID: '%s'.", last_id)
             self.send_error(http.client.BAD_REQUEST)
             return
         # Perform query.
         cursor = self._db.scan_results.find({
-            "ts": {"$gt": timestamp},
+            "_id": {"$gt": last_id},
         }, {
-            "_id": False,
             "cid": False,
         }).limit(max(limit, 128))
         # Write response.
         scan_results = list(cursor)
         self._logger.debug("Got %s result(s).", len(scan_results))
-        self.write(json.dumps(scan_results))
+        self.write(json.dumps(scan_results, cls=openwifi.helpers.MongoEncoder))
 
     def post(self, *args, **kwargs):
         scan_result = None
@@ -123,11 +126,12 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
             return
         else:
             self._logger.debug("Got scan result: %s", scan_result)
-            if not isinstance(scan_result, dict) or not self._post(scan_result):
+            _id = self._post(scan_result)
+            if not isinstance(scan_result, dict) or _id is None:
                 self.send_error(status_code=http.client.BAD_REQUEST)
                 return
 
-        self.write(self._OK_RESPONSE)
+        self.write(json.dumps(_id, cls=openwifi.helpers.MongoEncoder))
 
     def _post(self, scan_result):
         """
@@ -144,9 +148,9 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
                 continue
             if not validate(value):
                 self._logger.warning("Validation failed: %s", (key, value))
-                return False
+                return None
             scan_result_document[key] = value
 
-        self._db.scan_results.save(scan_result_document)
-        self._logger.debug("Saved scan result: %s", scan_result_document)
-        return True
+        _id = self._db.scan_results.insert(scan_result_document, manipulate=True)
+        self._logger.debug("Inserted scan result: %s", scan_result_document)
+        return _id
