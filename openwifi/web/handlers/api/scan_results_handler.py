@@ -86,11 +86,6 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
         self._db = db
         self._logger = logging.getLogger(ScanResultsHandler.__name__)
 
-    def prepare(self):
-        super(ScanResultsHandler, self).prepare()
-
-        pass
-
     def get(self, timestamp=None, limit=None, *args, **kwargs):
         if not timestamp or not limit:
             self._logger.warning("Both timestamp and limit are required.")
