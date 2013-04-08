@@ -18,7 +18,12 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
         file_encoding="utf-8",
         string_encoding="utf-8",
         search_dirs=[
-            os.path.join(os.path.dirname(openwifi.static.__file__), "templates"),
+            os.path.abspath(
+                os.path.join(
+                    os.path.dirname(openwifi.static.__file__),
+                    "templates",
+                ),
+            ),
         ],
         file_extension="mustache",
     )
