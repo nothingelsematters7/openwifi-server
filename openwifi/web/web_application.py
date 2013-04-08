@@ -16,7 +16,7 @@ import openwifi.web
 
 class WebApplication(tornado.web.Application):
     def __init__(self, db, test_mode=False):
-        static_files_path = os.path.dirname(openwifi.static.__file__)
+        static_files_path = os.path.abspath(os.path.dirname(openwifi.static.__file__))
 
         super(WebApplication, self).__init__(
             handlers=[(
