@@ -6,7 +6,6 @@ Makes the Open WiFi server tarball.
 """
 
 import argparse
-import compileall
 import logging
 import os
 import sys
@@ -16,15 +15,6 @@ import openwifi
 
 
 def main(args):
-    global with_sources
-    with_sources = args.with_sources
-
-    logging.info("Compiling into byte-code ...")
-    compileall.compile_dir(
-        dir=os.path.dirname(openwifi.__file__),
-        optimize=2,
-    )
-
     logging.info("Compressing ...")
     with tarfile.open(mode="w:gz", fileobj=args.output) as tarball:
         tarball.add(
@@ -59,13 +49,6 @@ def _create_argument_parser():
         dest="verbose",
         help="verbose mode",
     )
-    parser.add_argument(
-        "--with-sources",
-        action="store_true",
-        default=False,
-        dest="with_sources",
-        help="add *.py to the archive also",
-    )
 
     return parser
 
@@ -75,15 +58,13 @@ def _filter(tar_info):
     root_path = os.path.abspath(os.path.dirname(__file__))
     tar_info.name = tar_info.name[len(root_path):]
 
-    if tar_info.isdir():
+    if tar_info.isdir() and not tar_info.name.endswith("__pycache__"):
         logging.info("Adding directory %s", tar_info.name)
         return tar_info
 
     _, extension = os.path.splitext(tar_info.name)
     if extension.lower() in (
-        ".pyc",
-        ".pyo",
-        ".pyc",
+        ".py",
         ".css",
         ".ico",
         ".png",
@@ -91,8 +72,6 @@ def _filter(tar_info):
         ".csv",
         ".pem",
         ".txt",
-    ) or (
-        extension.lower() == ".py" and with_sources
     ):
         logging.info("Adding file %s", tar_info.name)
         return tar_info
