@@ -53,7 +53,7 @@ class Application:
             os.path.join(application_path, "cacert.pem"),
             os.path.join(application_path, "privkey.pem"),
         )
-        if certificate_path and key_path:
+        if args.https_port and certificate_path and key_path:
             https_server = tornado.httpserver.HTTPServer(
                 web_application,
                 ssl_options={

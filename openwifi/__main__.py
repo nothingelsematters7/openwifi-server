@@ -47,7 +47,7 @@ parser.add_argument(
     "--https-port",
     default=8443,
     dest="https_port",
-    help="application HTTPS port",
+    help="application HTTPS port (0 disables HTTPS)",
     metavar="PORT",
     type=int,
 )
