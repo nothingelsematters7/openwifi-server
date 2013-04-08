@@ -42,7 +42,11 @@ class Application:
         db.scan_results.ensure_index([("loc", pymongo.GEO2D)])
         # Initializing the web application.
         self._logger.info("Initializing the web application ...")
-        web_application = openwifi.web.web_application.WebApplication(db, args.test_mode)
+        web_application = openwifi.web.web_application.WebApplication(
+            db,
+            enable_gzip=args.enable_gzip,
+            test_mode=args.test_mode,
+        )
         # Set up HTTP server.
         self._logger.info("HTTP port %s.", args.http_port)
         http_server = tornado.httpserver.HTTPServer(web_application)

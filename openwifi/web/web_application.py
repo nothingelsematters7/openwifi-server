@@ -15,7 +15,7 @@ import openwifi.web
 
 
 class WebApplication(tornado.web.Application):
-    def __init__(self, db, test_mode=False):
+    def __init__(self, db, enable_gzip=False, test_mode=False):
         static_files_path = os.path.abspath(os.path.dirname(openwifi.static.__file__))
 
         super(WebApplication, self).__init__(
@@ -48,7 +48,7 @@ class WebApplication(tornado.web.Application):
                 openwifi.web.handlers.api.info_handler.InfoHandler,
                 {"test_mode": test_mode}
             )],
-            gzip=True,
+            gzip=enable_gzip,
         )
 
         self._logger = logging.getLogger(WebApplication.__name__)

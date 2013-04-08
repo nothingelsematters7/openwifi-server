@@ -79,6 +79,13 @@ parser.add_argument(
     default=False,
     help="fork server process",
 )
+parser.add_argument(
+    "--enable-gzip",
+    action="store_true",
+    dest="enable_gzip",
+    default=False,
+    help="enable GZip compression for HTTP(S)"
+)
 
 
 try:
