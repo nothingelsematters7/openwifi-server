@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import http.client
 import logging
 
 import openwifi.web.handlers.base_handler
@@ -22,6 +23,7 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
     def prepare(self):
         super(BaseHandler, self).prepare()
 
+        # Validate client ID.
         self._client_id = self.request.headers.get(self._X_CLIENT_ID_HEADER)
         self._logger.debug("_X_CLIENT_ID_HEADER: %s", self._client_id)
 

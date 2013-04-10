@@ -38,8 +38,19 @@ class Application:
             mongo_client.drop_database(args.database_name)
         db = pymongo.database.Database(mongo_client, args.database_name)
         self._logger.info("Creating indexes ...")
-        db.scan_results.ensure_index([("ts", pymongo.ASCENDING)])
-        db.scan_results.ensure_index([("loc", pymongo.GEO2D)])
+        db.scan_results.ensure_index([
+            # For sorting during synchronization.
+            ("_id", pymongo.ASCENDING),
+        ])
+        db.scan_results.ensure_index([
+            # For fast checking if the scan result already exists.
+            ("cid", pymongo.ASCENDING),
+            ("ts", pymongo.ASCENDING),
+        ], unique=True)
+        db.scan_results.ensure_index([
+            # For micro-synchronization feature.
+            ("loc", pymongo.GEO2D),
+        ])
         # Initializing the web application.
         self._logger.info("Initializing the web application ...")
         web_application = openwifi.web.web_application.WebApplication(

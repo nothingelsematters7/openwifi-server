@@ -10,6 +10,8 @@ import re
 
 # noinspection PyPackageRequirements
 import bson.objectid
+import pymongo
+import pymongo.errors
 
 import openwifi.helpers
 import openwifi.web.handlers.api.base_handler
@@ -113,13 +115,18 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
             "_id": {"$gt": last_id},
         }, {
             "cid": False,
-        }).limit(max(limit, 128))
+        }).sort([("_id", pymongo.ASCENDING)]).limit(max(limit, 128))
         # Write response.
         scan_results = list(cursor)
         self._logger.debug("Got %s result(s).", len(scan_results))
         self.write(json.dumps(scan_results, cls=openwifi.helpers.MongoEncoder))
 
     def post(self, *args, **kwargs):
+        # Check the headers.
+        if not self._client_id:
+            self._logger.warning("No client ID.")
+            self.send_error(status_code=http.client.BAD_REQUEST)
+            return
         # Deserialize the scan result.
         scan_result = None
         try:
@@ -129,37 +136,36 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
             self._logger.warning("Value error. Body: %s", scan_result)
             self.send_error(status_code=http.client.BAD_REQUEST)
             return
-        # Check the scan result type.
-        self._logger.debug("Got scan result: %s", scan_result)
-        if not isinstance(scan_result, dict):
-            self._logger.warning("Scan result is not a dict.")
+        # Check the scan result type and size.
+        if not isinstance(scan_result, dict) or len(scan_result) != len(_validators):
+            self._logger.warning("Scan result is not a dict or has an invalid size.")
             self.send_error(status_code=http.client.BAD_REQUEST)
             return
-        # Initialize the document to insert.
-        scan_result_document = dict()
+        # Validate the document.
         for key, value in scan_result.items():
             validate = _validators.get(key)
-            if not validate:
-                # Ignore extra field.
-                continue
             # Check the value.
-            if not validate(value):
+            if not validate or not validate(value):
                 self._logger.warning("Validation failed: %s", (key, value))
                 self.send_error(status_code=http.client.BAD_REQUEST)
                 return
-            scan_result_document[key] = value
-        if len(scan_result_document) != len(_validators):
-            self._logger.warning("Invalid scan result document size.")
-            self.send_error(status_code=http.client.BAD_REQUEST)
-            return
+        # Let _id be None by default because scan result may be not saved.
+        _id = None
         # Check the document value.
-        if not _filter_scan_result(scan_result_document):
-            self._logger.warning("Document is filtered: '%s'.", scan_result_document)
-            self.write("null")
-            return
-        # Insert the document.
-        scan_result_document["cid"] = self._client_id
-        _id = self._db.scan_results.insert(scan_result_document, manipulate=True)
-        self._logger.debug("Inserted scan result: %s", scan_result_document)
+        if _filter_scan_result(scan_result):
+            # Attach the client ID.
+            scan_result["cid"] = self._client_id
+            # Insert the document.
+            try:
+                _id = self._db.scan_results.insert(
+                    scan_result,
+                    # Generate _id on the client side.
+                    manipulate=True,
+                )
+            except pymongo.errors.DuplicateKeyError:
+                # Perhaps, the (cid, ts) index was violated.
+                self._logger.debug("Duplicate: %s", scan_result)
+            else:
+                self._logger.debug("Saved scan result: %s", scan_result)
         # Write response.
         self.write(json.dumps(_id, cls=openwifi.helpers.MongoEncoder))
