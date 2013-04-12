@@ -33,7 +33,7 @@ def _validate_ssid(value):
     Validates SSID.
     """
 
-    return isinstance(value, str) and len(value)
+    return isinstance(value, str) and 0 < len(value) <= 32
 
 
 def _validate_timestamp(value):
