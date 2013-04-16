@@ -46,6 +46,7 @@ class Application:
             # For fast checking if the scan result already exists.
             ("cid", pymongo.ASCENDING),
             ("ts", pymongo.ASCENDING),
+            ("bssid", pymongo.ASCENDING),
         ], unique=True)
         db.scan_results.ensure_index([
             # For micro-synchronization feature.
