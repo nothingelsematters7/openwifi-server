@@ -17,7 +17,7 @@ class TestScanResultsHandler(openwifi.integration_tests.BaseTestCase):
     def test_post(self):
         response = requests.post(
             self._URL,
-            json.dumps({
+            json.dumps([{
                 "bssid": "00:00:00:00:00:00",
                 "ssid": "test",
                 "ts": 1,
@@ -26,14 +26,12 @@ class TestScanResultsHandler(openwifi.integration_tests.BaseTestCase):
                     "lat": 53.87,
                     "lon": 27.54,
                 },
-            }),
+            }]),
             headers={
                 openwifi.web.handlers.api.base_handler.BaseHandler._X_CLIENT_ID_HEADER: "test",
             },
         )
         self.assertEqual(200, response.status_code, "Request failed.")
-        # Validate ObjectID.
-        bson.objectid.ObjectId(response.json())
 
     def test_get(self):
         response = requests.get(self._URL + "000000000000000000000000/1/")

@@ -125,51 +125,44 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
         self.write(json.dumps(scan_results, cls=openwifi.helpers.MongoEncoder))
 
     def post(self, *args, **kwargs):
-        # Check the headers.
-        if not self._client_id:
-            self._logger.warning("No client ID.")
-            self.send_error(status_code=http.client.BAD_REQUEST)
-            return
-        # Deserialize the scan result.
-        scan_result = None
+        # Initialize with None as it will be used in except block.
+        scan_results = None
         try:
-            scan_result = self.request.body.decode("utf-8")
-            scan_result = json.loads(scan_result)
-        except ValueError:
-            self._logger.warning("Value error. Body: %s", scan_result)
+            # Check the headers.
+            if not self._client_id:
+                raise ValueError("No client ID.")
+            # Deserialize the scan results.
+            scan_results = self.request.body.decode("utf-8")
+            scan_results = json.loads(scan_results)
+            if not isinstance(scan_results, list):
+                raise ValueError("Scan result is not a list.")
+            self._logger.debug("Got %s scan results.", len(scan_results))
+            for scan_result in scan_results:
+                # Validate the document.
+                if len(scan_result) != len(_validators):
+                    raise ValueError("Invalid document size.")
+                for key, value in scan_result.items():
+                    validate = _validators.get(key)
+                    # Check the value.
+                    if not validate or not validate(value):
+                        raise ValueError("Validation failed: %s" % (key, value))
+                # Check the document value.
+                if _filter_scan_result(scan_result):
+                    # Attach the client ID.
+                    scan_result["cid"] = self._client_id
+                    # Insert the document.
+                    try:
+                        self._db.scan_results.insert(
+                            scan_result,
+                            # Generate _id on the client side.
+                            manipulate=True,
+                        )
+                    except pymongo.errors.DuplicateKeyError:
+                        # Perhaps, the (cid, ts, bssid) index was violated.
+                        self._logger.debug("Duplicate: %s", scan_result)
+                    else:
+                        self._logger.debug("Saved scan result: %s", scan_result)
+        except ValueError as ex:
+            self._logger.warning("Value error: %s on %s", ex.message, scan_results)
             self.send_error(status_code=http.client.BAD_REQUEST)
             return
-        # Check the scan result type and size.
-        if not isinstance(scan_result, dict) or len(scan_result) != len(_validators):
-            self._logger.warning("Scan result is not a dict or has an invalid size.")
-            self.send_error(status_code=http.client.BAD_REQUEST)
-            return
-        # Validate the document.
-        for key, value in scan_result.items():
-            validate = _validators.get(key)
-            # Check the value.
-            if not validate or not validate(value):
-                self._logger.warning("Validation failed: %s", (key, value))
-                self._logger.debug("Entire document: %s", scan_result)
-                self.send_error(status_code=http.client.BAD_REQUEST)
-                return
-        # Let _id be None by default because scan result may be not saved.
-        _id = None
-        # Check the document value.
-        if _filter_scan_result(scan_result):
-            # Attach the client ID.
-            scan_result["cid"] = self._client_id
-            # Insert the document.
-            try:
-                _id = self._db.scan_results.insert(
-                    scan_result,
-                    # Generate _id on the client side.
-                    manipulate=True,
-                )
-            except pymongo.errors.DuplicateKeyError:
-                # Perhaps, the (cid, ts) index was violated.
-                self._logger.debug("Duplicate: %s", scan_result)
-            else:
-                self._logger.debug("Saved scan result: %s", scan_result)
-        # Write response.
-        self.write(json.dumps(_id, cls=openwifi.helpers.MongoEncoder))
