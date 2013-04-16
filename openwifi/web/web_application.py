@@ -6,6 +6,7 @@ import os
 
 import tornado.web
 
+import openwifi.web.handlers.api.check_handler
 import openwifi.web.handlers.api.info_handler
 import openwifi.web.handlers.api.scan_results_handler
 import openwifi.web.handlers.static_file_handler
@@ -20,6 +21,9 @@ class WebApplication(tornado.web.Application):
 
         super(WebApplication, self).__init__(
             handlers=[(
+                r"/api/check/",
+                openwifi.web.handlers.api.check_handler.CheckHandler,
+            ), (
                 r"/",
                 openwifi.web.handlers.ui.template_handler.TemplateHandler,
                 {"template_name": "home"},
