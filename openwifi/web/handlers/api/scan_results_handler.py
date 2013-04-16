@@ -52,7 +52,7 @@ def _validate_accuracy(value):
     Validate accuracy.
     """
 
-    return isinstance(value, float) and 0.0 <= value
+    return (isinstance(value, int) and 0 <= value) or (isinstance(value, float) and 0.0 <= value)
 
 
 def _validate_location(value):
@@ -90,6 +90,9 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
     Scan results request handler.
     """
 
+    # Prevents the entire collection to be loaded into memory at once.
+    _GET_SCAN_RESULTS_LIMIT = 128
+
     # noinspection PyMethodOverriding
     def initialize(self, db):
         super(ScanResultsHandler, self).initialize()
@@ -115,7 +118,7 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
             "_id": {"$gt": last_id},
         }, {
             "cid": False,
-        }).sort([("_id", pymongo.ASCENDING)]).limit(max(limit, 128))
+        }).sort([("_id", pymongo.ASCENDING)]).limit(max(limit, self._GET_SCAN_RESULTS_LIMIT))
         # Write response.
         scan_results = list(cursor)
         self._logger.debug("Got %s result(s).", len(scan_results))
