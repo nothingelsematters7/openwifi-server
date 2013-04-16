@@ -56,6 +56,8 @@ def _create_argument_parser():
 def _filter(tar_info):
     # Cut path prefix.
     root_path = os.path.abspath(os.path.dirname(__file__))
+    logging.debug("Root path is %s", root_path)
+    logging.debug("Processing %s", tar_info.name)
     tar_info.name = tar_info.name[len(root_path):]
 
     if tar_info.isdir() and not tar_info.name.endswith("__pycache__"):
