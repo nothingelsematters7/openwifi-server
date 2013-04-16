@@ -43,7 +43,8 @@ def _validate_timestamp(value):
 
     return (
         isinstance(value, int) and
-        value < calendar.timegm(datetime.datetime.utcnow().utctimetuple())
+        # value is stored in ms.
+        value / 1000 < calendar.timegm(datetime.datetime.utcnow().utctimetuple())
     )
 
 
