@@ -150,6 +150,7 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
             # Check the value.
             if not validate or not validate(value):
                 self._logger.warning("Validation failed: %s", (key, value))
+                self._logger.debug("Entire document: %s", scan_result)
                 self.send_error(status_code=http.client.BAD_REQUEST)
                 return
         # Let _id be None by default because scan result may be not saved.
