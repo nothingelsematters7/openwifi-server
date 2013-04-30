@@ -1,63 +1,100 @@
-    <div id="footer">
-        <div class="container">
-            <div class="row">
-                <div class="span4">
-                    <h2>{{#t}}About Project{{/t}}</h2>
-                    <p>{{#t}}Open WiFi is a project that allows you to stay in touch.{{/t}}</p>
-                </div>
+        <div id="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="span4">
+                        <h2>{{#t}}About Project{{/t}}</h2>
+                        <p>{{#t}}Open WiFi is a project that allows you to stay in touch.{{/t}}</p>
+                    </div>
 
-                <div class="span4">
-                    <h2>{{#t}}Statistics{{/t}}</h2>
-                    12345 сетей Wi-Fi<br>
-                    100500 точек доступа<br>
-                    <a href="#" class="">{{#t}}More Info{{/t}} &rarr;</a>
-                </div>
+                    <div class="span4">
+                        <h2>{{#t}}Statistics{{/t}}</h2>
+                        12345 сетей Wi-Fi<br>
+                        100500 точек доступа<br>
+                        <a href="#" class="">{{#t}}More Info{{/t}} &rarr;</a>
+                    </div>
 
-                <div class="span4">
-                    <h2>Обратная связь</h2>
-                    <a href="http://openwifi.userecho.com" onmouseover="UE.Popin.preload();" href="#" onclick="UE.Popin.show(); return false;">Предложить</a> идею<br>
-                    <a href="mailto:info@openwifi.info">Написать нам письмо</a>
-                </div>
-            </div><!-- /row -->
-        </div><!-- /container -->
-    </div><!-- /footer -->
+                    <div class="span4">
+                        <h2>Обратная связь</h2>
+                        <a href="http://openwifi.userecho.com" onmouseover="UE.Popin.preload();" onclick="UE.Popin.show(); return false;">Предложить</a> идею<br>
+                        <a href="mailto:info@openwifi.info">Написать нам письмо</a>
+                    </div>
+                </div><!-- /row -->
+            </div><!-- /container -->
+        </div><!-- /footer -->
 
-    <div id="copyright">
-        <div class="container">
-            <div class="row">
-                <p class="span6">© 2013 Open WiFi</p>
-                <p class="span6"><a class="pull-right" href="#">Наверх &uarr;</a></p>
-            </div> <!-- /row -->
-        </div> <!-- /container -->
-    </div> <!-- /copyright -->
+        <div id="copyright">
+            <div class="container">
+                <div class="row">
+                    <p class="span6">© 2013 Open WiFi</p>
+                    <p class="span6"><a class="pull-right" href="#">Наверх &uarr;</a></p>
+                </div> <!-- /row -->
+            </div> <!-- /container -->
+        </div> <!-- /copyright -->
 
-    <!-- Le javascript -->
-    <!-- Placed at the end of the document so the pages load faster -->
+        <!-- Le javascript -->
+        <!-- Placed at the end of the document so the pages load faster -->
 
-    <script type='text/javascript'>
+        <script type='text/javascript'>
 
-        var _ues = {
-            host:'openwifi.userecho.com',
-            forum:'18892',
-            lang:'{{#t}}en{{/t}}',
-            tab_corner_radius:0,
-            tab_font_size:20,
-            tab_image_hash:'0L7RgdGC0LDQstC40YLRjCDQvtGC0LfRi9Cy',
-            tab_chat_hash:'0YfQsNGC',
-            tab_alignment:'right',
-            tab_text_color:'#333333',
-            tab_text_shadow_color:'#FFFFFF55',
-            tab_bg_color:'#D6D6D6',
-            tab_hover_color:'#999'
-        };
+            var _ues = {
+                host:'openwifi.userecho.com',
+                forum:'18892',
+                lang:'{{#t}}en{{/t}}',
+                tab_corner_radius:0,
+                tab_font_size:20,
+                tab_image_hash:'0L7RgdGC0LDQstC40YLRjCDQvtGC0LfRi9Cy',
+                tab_chat_hash:'0YfQsNGC',
+                tab_alignment:'right',
+                tab_text_color:'#333333',
+                tab_text_shadow_color:'#FFFFFF55',
+                tab_bg_color:'#D6D6D6',
+                tab_hover_color:'#999'
+            };
 
-        (function() {
-            var _ue = document.createElement('script'); _ue.type = 'text/javascript'; _ue.async = true;
-            _ue.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.userecho.com/js/widget-1.4.gz.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(_ue, s);
-        })();
+            (function() {
+                var _ue = document.createElement('script'); _ue.type = 'text/javascript'; _ue.async = true;
+                _ue.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.userecho.com/js/widget-1.4.gz.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(_ue, s);
+            })();
 
-    </script>
+        </script>
+
+        <!-- Yandex.Metrika counter -->
+        <script type="text/javascript">
+        (function (d, w, c) {
+            (w[c] = w[c] || []).push(function() {
+                try {
+                    w.yaCounter21154192 = new Ya.Metrika({id:21154192,
+                            clickmap:true,
+                            trackLinks:true,
+                            accurateTrackBounce:true});
+                } catch(e) { }
+            });
+
+            var n = d.getElementsByTagName("script")[0],
+                s = d.createElement("script"),
+                f = function () { n.parentNode.insertBefore(s, n); };
+            s.type = "text/javascript";
+            s.async = true;
+            s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+            if (w.opera == "[object Opera]") {
+                d.addEventListener("DOMContentLoaded", f, false);
+            } else { f(); }
+        })(document, window, "yandex_metrika_callbacks");
+        </script>
+        <noscript><div><img src="//mc.yandex.ru/watch/21154192" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+        <!-- /Yandex.Metrika counter -->
+
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-40565335-1', 'eigenein.info');
+            ga('send', 'pageview');
+        </script>
 
     </body>
 </html>
