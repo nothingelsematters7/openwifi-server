@@ -1,6 +1,6 @@
+log.txt
+openwifi.log
 openwifi.pid
-*.tar.gz
-*.tgz
 
 *.py[cod]
 
