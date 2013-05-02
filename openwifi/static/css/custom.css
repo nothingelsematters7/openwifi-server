@@ -1,4 +1,0 @@
-html { min-width: 1024px; }
-.featured a.screenshot:nth-child(2n) { width: 540px; left: 200px; }
-.featured a.screenshot:first-child { width: 540px; }
-.featured a.screenshot:nth-child(3n) { width: 540px; }
