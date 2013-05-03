@@ -112,7 +112,7 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
                 raise ValueError("Invalid limit: %s" % limit)
             last_id = bson.objectid.ObjectId(last_id)
         except (ValueError, bson.objectid.InvalidId) as ex:
-            self._logger.warning("Value error: %s.", ex.message)
+            self._logger.warning("Value error: %s.", ex)
             self.send_error(http.client.BAD_REQUEST)
             return
         # Perform query.
@@ -166,6 +166,6 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
                     else:
                         self._logger.debug("Saved scan result: %s", scan_result)
         except ValueError as ex:
-            self._logger.warning("Value error: %s on %s", ex.message, scan_results)
+            self._logger.warning("Value error: %s on %s", ex, scan_results)
             self.send_error(status_code=http.client.BAD_REQUEST)
             return
