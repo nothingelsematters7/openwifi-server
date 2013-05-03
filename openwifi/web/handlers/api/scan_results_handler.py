@@ -121,7 +121,7 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
             "cid": {"$ne": self._client_id},
         }, {
             "cid": False,
-        }).sort([("_id", pymongo.ASCENDING)]).limit(max(limit, self._GET_SCAN_RESULTS_LIMIT))
+        }).sort([("_id", pymongo.ASCENDING)]).limit(min(limit, self._GET_SCAN_RESULTS_LIMIT))
         # Write response.
         scan_results = list(cursor)
         self._logger.debug("Got %s result(s).", len(scan_results))
