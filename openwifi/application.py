@@ -39,7 +39,7 @@ class Application:
         db = pymongo.database.Database(mongo_client, args.database_name)
         self._logger.info("Creating indexes ...")
         db.scan_results.ensure_index([
-            # For sorting during synchronization.
+            # For server-to-client synchronization.
             ("_id", pymongo.ASCENDING),
         ])
         db.scan_results.ensure_index([

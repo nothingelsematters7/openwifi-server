@@ -102,21 +102,23 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
         self._logger = logging.getLogger(ScanResultsHandler.__name__)
 
     def get(self, last_id=None, limit=None, *args, **kwargs):
-        # Parse parameters.
-        limit = int(limit)
-        if limit < 0:
-            self._logger.warning("Invalid limit: '%s'.", limit)
-            self.send_error(http.client.BAD_REQUEST)
-            return
         try:
+            # Check headers.
+            if not self._client_id:
+                raise ValueError("No client ID.")
+            # Parse parameters.
+            limit = int(limit)
+            if limit < 0:
+                raise ValueError("Invalid limit: %s" % limit)
             last_id = bson.objectid.ObjectId(last_id)
-        except bson.objectid.InvalidId:
-            self._logger.warning("Invalid last ID: '%s'.", last_id)
+        except (ValueError, bson.objectid.InvalidId) as ex:
+            self._logger.warning("Value error: %s.", ex.message)
             self.send_error(http.client.BAD_REQUEST)
             return
         # Perform query.
         cursor = self._db.scan_results.find({
             "_id": {"$gt": last_id},
+            "cid": {"$ne": self._client_id},
         }, {
             "cid": False,
         }).sort([("_id", pymongo.ASCENDING)]).limit(max(limit, self._GET_SCAN_RESULTS_LIMIT))
