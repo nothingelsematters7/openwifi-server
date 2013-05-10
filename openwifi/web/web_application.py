@@ -6,13 +6,13 @@ import os
 
 import tornado.web
 
+import openwifi.static
+import openwifi.web
 import openwifi.web.handlers.api.check_handler
 import openwifi.web.handlers.api.info_handler
 import openwifi.web.handlers.api.scan_results_handler
 import openwifi.web.handlers.static_file_handler
 import openwifi.web.handlers.ui.template_handler
-import openwifi.static
-import openwifi.web
 
 
 class WebApplication(tornado.web.Application):
@@ -26,7 +26,7 @@ class WebApplication(tornado.web.Application):
             ), (
                 r"/",
                 openwifi.web.handlers.ui.template_handler.TemplateHandler,
-                {"template_name": "home"},
+                {"template_name": "home", "db": db},
             ), (
                 r"/(robots.txt)",
                 openwifi.web.handlers.static_file_handler.StaticFileHandler,

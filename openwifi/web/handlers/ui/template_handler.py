@@ -6,6 +6,7 @@ import logging
 import tornado.locale
 import tornado.web
 
+import openwifi.helpers
 import openwifi.web.handlers.ui.base_handler
 
 
@@ -15,11 +16,12 @@ class TemplateHandler(openwifi.web.handlers.ui.base_handler.BaseHandler):
     """
 
     # noinspection PyMethodOverriding
-    def initialize(self, template_name):
+    def initialize(self, db, template_name):
         super(TemplateHandler, self).initialize()
 
         self._logger = logging.getLogger(TemplateHandler.__name__)
         self._template_name = template_name
+        self._db = db
 
     @tornado.web.removeslash
     def get(self, *args, **kwargs):
@@ -28,4 +30,5 @@ class TemplateHandler(openwifi.web.handlers.ui.base_handler.BaseHandler):
             self._template_name,
             # Translate function.
             t=self.locale.translate,
+            statistics=openwifi.helpers.Statistics(self._db),
         ))
