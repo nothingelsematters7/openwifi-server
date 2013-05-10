@@ -28,6 +28,10 @@ class WebApplication(tornado.web.Application):
                 openwifi.web.handlers.ui.template_handler.TemplateHandler,
                 {"template_name": "home", "db": db},
             ), (
+                r"/download",
+                openwifi.web.handlers.ui.template_handler.TemplateHandler,
+                {"template_name": "download", "db": db},
+            ), (
                 r"/(robots.txt)",
                 openwifi.web.handlers.static_file_handler.StaticFileHandler,
                 {"path": static_files_path},
