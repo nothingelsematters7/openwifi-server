@@ -30,7 +30,7 @@ class Statistics:
     The cache for statistics information.
     """
 
-    _TTL = 3600.0
+    _TTL = 10.0
 
     _values = dict()
     _getters = dict()
