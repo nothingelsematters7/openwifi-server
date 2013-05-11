@@ -63,12 +63,12 @@ class Statistics:
             return None
         # Check for cached value.
         value, now = self._values.get(key), time.time()
-        if (value is None) or (value[1] - now > self._TTL):
+        if (value is None) or (now - value[1] > self._TTL):
             # No cached value or it is outdated.
             self._logger.debug("Get %s.", key)
             self._values[key] = value = (getter(), now)
         else:
-            self._logger.debug("Cached: %sms ago.", value[1] - now)
+            self._logger.debug("Cached: %sms ago.", now - value[1])
         # Return the value.
         self._logger.debug("Got %s: %s.", key, value)
         return value[0]
