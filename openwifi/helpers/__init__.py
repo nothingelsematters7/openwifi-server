@@ -67,8 +67,6 @@ class Statistics:
             # No cached value or it is outdated.
             self._logger.debug("Get %s.", key)
             self._values[key] = value = (getter(), now)
-        else:
-            self._logger.debug("Cached: %sms ago.", now - value[1])
         # Return the value.
         self._logger.debug("Got %s: %s.", key, value)
         return value[0]
