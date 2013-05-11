@@ -30,7 +30,7 @@ class Statistics:
     The cache for statistics information.
     """
 
-    _TTL = 10.0
+    _TTL = 3600.0
 
     _values = dict()
     _getters = dict()
@@ -65,8 +65,10 @@ class Statistics:
         value, now = self._values.get(key), time.time()
         if (value is None) or (value[1] - now > self._TTL):
             # No cached value or it is outdated.
-            self._logger.debug("Get (%s, %s).", key, value[1] - now if value else None)
+            self._logger.debug("Get %s.", key)
             self._values[key] = value = (getter(), now)
+        else:
+            self._logger.debug("Cached: %sms ago.", value[1] - now)
         # Return the value.
         self._logger.debug("Got %s: %s.", key, value)
         return value[0]
