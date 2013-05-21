@@ -80,7 +80,7 @@ class Statistics:
             {"$group": {"_id": "$" + field_name}},
             {"$group": {"_id": None, "count": {"$sum": 1}}},
         ])
-        if response["ok"]:
+        if response["ok"] and response["result"]:
             return response["result"][0]["count"]
         else:
-            return None
+            return 0
