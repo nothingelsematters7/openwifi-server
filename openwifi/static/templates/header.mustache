@@ -16,6 +16,7 @@
         .featured a.screenshot:nth-child(3n) { width: 540px; }
         .featured a.screenshot { background-repeat: no-repeat; }
         .alert { font-size: 16px; }
+        .no-underline:hover { text-decoration: none; }
     </style>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -40,7 +41,9 @@
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="brand" href="http://openwifi.info">Open WiFi <span class="badge">&beta;</span></a>
+                <a class="brand" href="http://openwifi.info">Open WiFi</a>
+                <a class="no-underline" href="http://vk.com/owifi" target="_blank"><span class="badge badge-info">{{#t}}VK{{/t}}</span></a>
+                <a class="no-underline" href="https://plus.google.com/communities/106829221677020050162" target="_blank"><span class="badge badge-important">Google+</span></a>
                 <ul class="nav pull-right">
                     <li><a href="/download">{{#t}}Download Application{{/t}}</a></li>
                     <!-- <li><a href="#">{{#t}}Statistics{{/t}}</a></li> -->
