@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import hashlib
 import http.client
 import logging
 
@@ -49,8 +50,8 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
         # Validate the authentication token format.
         if not auth_token:
             return None
-        # Redis key.
-        key = "auth:" + auth_token
+        # Redis key. Do not store authentication tokens "as is".
+        key = "auth:" + self._hash(auth_token)
         # Check if the token is in the cache.
         user_id = self._cache.get(key)
         if user_id:
@@ -66,8 +67,12 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
             return None
         # The token is valid. Obtain the user ID.
         token_info = response.json()
-        user_id = token_info["user_id"]
+        # Depersonalize the user. 
+        user_id = self._hash(token_info["user_id"])
         # Put the user ID into the cache.
         self._cache.set(key, user_id , ex=token_info["expires_in"])
         # And return the user ID.
         return user_id
+
+    def _hash(self, data):
+        return hashlib.sha1(data).hexdigest()
