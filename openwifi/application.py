@@ -62,7 +62,7 @@ class Application:
         # Set up HTTP server.
         self._logger.info("HTTP port %s.", args.http_port)
         http_server = tornado.httpserver.HTTPServer(web_application)
-        http_server.listen(args.http_port)
+        http_server.listen(args.http_port, address="127.0.0.1")
         # Set up HTTPS server if possible.
         application_path = os.path.abspath(os.path.dirname(__file__))
         certificate_path, key_path = (
@@ -78,7 +78,7 @@ class Application:
                 },
             )
             self._logger.info("HTTPS port: %s.", args.https_port)
-            https_server.listen(args.https_port)
+            https_server.listen(args.https_port, address="127.0.0.1")
         else:
             self._logger.info("Not using HTTPS.")
         # Load translations.
