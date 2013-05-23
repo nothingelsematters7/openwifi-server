@@ -96,6 +96,7 @@ try:
         level=getattr(logging, args.log_level),
         stream=args.log_file,
     )
+    logging.getLogger("requests").setLevel(logging.WARNING)
     # Run the main function.
     logging.getLogger(__name__).info(
         "Starting Open WiFi server %s ...",
