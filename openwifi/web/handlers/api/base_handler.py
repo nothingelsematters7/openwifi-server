@@ -54,7 +54,8 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
         # Check if the token is in the cache.
         user_id = self._cache.get(key)
         if user_id:
-            return user_id
+            # Explicitly convert from bytes to string.
+            return str(user_id)
         # Verify the token.
         response = requests.get(
             "https://www.googleapis.com/oauth2/v1/tokeninfo",
@@ -63,8 +64,9 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
         if response.status_code != requests.codes.ok:
             return None
         # The token is valid. Obtain the user ID.
-        user_id = response.json()["user_id"]
+        token_info = response.json()
+        user_id = token_info["user_id"]
         # Put the user ID into the cache.
-        self._cache.set(key, user_id)
+        self._cache.set(key, user_id , ex=token_info["expires_in"])
         # And return the user ID.
         return user_id
