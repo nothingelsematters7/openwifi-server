@@ -16,7 +16,7 @@ import openwifi.web.handlers.ui.template_handler
 
 
 class WebApplication(tornado.web.Application):
-    def __init__(self, db, enable_gzip=False, test_mode=False):
+    def __init__(self, db, cache, enable_gzip=False, test_mode=False):
         static_files_path = os.path.abspath(os.path.dirname(openwifi.static.__file__))
 
         super(WebApplication, self).__init__(
@@ -46,11 +46,11 @@ class WebApplication(tornado.web.Application):
             ), (
                 r"/api/scan-results/",
                 openwifi.web.handlers.api.scan_results_handler.ScanResultsHandler,
-                {"db": db},
+                {"db": db, "cache": cache},
             ), (
                 r"/api/scan-results/([0-9a-fA-F]{24})/(\d+)/",
                 openwifi.web.handlers.api.scan_results_handler.ScanResultsHandler,
-                {"db": db},
+                {"db": db, "cache": cache},
             ), (
                 r"/api/info/",
                 openwifi.web.handlers.api.info_handler.InfoHandler,

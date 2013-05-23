@@ -95,8 +95,8 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
     _GET_SCAN_RESULTS_LIMIT = 128
 
     # noinspection PyMethodOverriding
-    def initialize(self, db):
-        super(ScanResultsHandler, self).initialize()
+    def initialize(self, db, cache):
+        super(ScanResultsHandler, self).initialize(cache)
 
         self._db = db
         self._logger = logging.getLogger(ScanResultsHandler.__name__)
@@ -151,8 +151,11 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
                         raise ValueError("Validation failed: %s" % (key, value))
                 # Check the document value.
                 if _filter_scan_result(scan_result):
-                    # Attach the client ID.
-                    scan_result["cid"] = self._client_id
+                    # Attach the client ID and the user ID.
+                    scan_result.update({
+                        "cid": self._client_id,
+                        "uid": self._user_id,
+                    })
                     # Insert the document.
                     try:
                         self._db.scan_results.insert(

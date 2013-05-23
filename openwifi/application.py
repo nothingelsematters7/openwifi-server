@@ -8,6 +8,8 @@ import sys
 import pymongo
 import pymongo.database
 
+import redis
+
 import tornado.httpserver
 import tornado.ioloop
 import tornado.locale
@@ -52,10 +54,13 @@ class Application:
             # For micro-synchronization feature.
             ("loc", pymongo.GEO2D),
         ])
+        # Initializing the cache.
+        cache = redis.StrictRedis()
         # Initializing the web application.
         self._logger.info("Initializing the web application ...")
         web_application = openwifi.web.web_application.WebApplication(
             db,
+            cache,
             enable_gzip=args.enable_gzip,
             test_mode=args.test_mode,
         )
