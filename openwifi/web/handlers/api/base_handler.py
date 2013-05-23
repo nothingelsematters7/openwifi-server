@@ -14,6 +14,7 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
 
     _CONTENT_TYPE_HEADER = "Content-Type"
     _X_CLIENT_ID_HEADER = "X-Client-ID"
+    _X_AUTH_TOKEN_HEADER = "X-Auth-Token"
 
     def initialize(self):
         super(BaseHandler, self).initialize()
@@ -26,5 +27,7 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
         # Validate client ID.
         self._client_id = self.request.headers.get(self._X_CLIENT_ID_HEADER)
         self._logger.debug("%s: %s", self._X_CLIENT_ID_HEADER, self._client_id)
+        self._auth_token = self.request.headers.get(self._X_AUTH_TOKEN_HEADER)
+        self._logger.debug("%s: %s", self._X_AUTH_TOKEN_HEADER, self._auth_token)
 
         self.set_header("Content-Type", "application/json")
