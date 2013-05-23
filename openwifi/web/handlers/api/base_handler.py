@@ -65,6 +65,6 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
         # The token is valid. Obtain the user ID.
         user_id = response.json()["user_id"]
         # Put the user ID into the cache.
-        self._cache.put(key, user_id)
+        self._cache.set(key, user_id)
         # And return the user ID.
         return user_id
