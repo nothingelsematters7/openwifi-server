@@ -55,7 +55,7 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
         user_id = self._cache.get(key)
         if user_id:
             # Explicitly convert from bytes to string.
-            return str(user_id)
+            return str(user_id, "ascii")
         # Verify the token.
         self._logger.debug("Verifiying the token %s", auth_token)
         response = requests.get(
