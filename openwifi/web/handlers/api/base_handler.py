@@ -58,7 +58,7 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
             # Explicitly convert from bytes to string.
             return str(user_id, "utf-8")
         # Verify the token.
-        self._logger.debug("Verifiying the token %s", auth_token)
+        self._logger.debug("Verifying the token %s", auth_token)
         response = requests.get(
             "https://www.googleapis.com/oauth2/v1/tokeninfo",
             params={"access_token": auth_token},
