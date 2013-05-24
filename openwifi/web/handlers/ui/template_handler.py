@@ -23,6 +23,11 @@ class TemplateHandler(openwifi.web.handlers.ui.base_handler.BaseHandler):
         self._template_name = template_name
         self._db = db
 
+    def prepare(self):
+        super(TemplateHandler, self).prepare()
+
+        self._logger.debug("User agent: %s", self.request.headers.get("User-Agent"))
+
     @tornado.web.removeslash
     def get(self, *args, **kwargs):
         self._logger.debug("Request locale: %s", self.locale.code)
