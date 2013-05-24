@@ -106,6 +106,8 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
             # Check headers.
             if not self._client_id:
                 raise ValueError("No client ID.")
+            if not self._user_id:
+                raise ValueError("No user ID.")
             # Parse parameters.
             limit = int(limit)
             if limit < 0:
