@@ -51,12 +51,11 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
         if not auth_token:
             return None
         # Redis key. Do not store authentication tokens "as is".
-        key = "auth:" + self._hash(auth_token)
+        key = b"auth:" + self._hash(auth_token)
         # Check if the token is in the cache.
         user_id = self._cache.get(key)
         if user_id:
-            # Explicitly convert from bytes to string.
-            return str(user_id, "utf-8")
+            return user_id
         # Verify the token.
         self._logger.debug("Verifying the token %s", auth_token)
         response = requests.get(
@@ -75,4 +74,4 @@ class BaseHandler(openwifi.web.handlers.base_handler.BaseHandler):
         return user_id
 
     def _hash(self, string):
-        return hashlib.sha1(bytes(string, "utf-8")).hexdigest()
+        return hashlib.sha1(bytes(string, "utf-8")).digest()
