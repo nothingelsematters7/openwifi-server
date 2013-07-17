@@ -16,6 +16,7 @@ import tornado.locale
 
 import openwifi.helpers.exit_codes
 import openwifi.static
+import openwifi.utils.cleanup_db
 import openwifi.web.web_application
 
 
@@ -47,6 +48,9 @@ class Application:
             # For micro-synchronization feature.
             ("loc", pymongo.GEO2D),
         ])
+        # Check for cleanup mode.
+        if args.cleanup_db:
+            return openwifi.utils.cleanup_db.CleanupDB().main(args, db=db)
         # Initializing the cache.
         cache = redis.StrictRedis()
         # Initializing the web application.

@@ -24,7 +24,7 @@ except ImportError as ex:
 parser = argparse.ArgumentParser(
     prog="python3 -m openwifi",
     description=globals()["__doc__"],
-    formatter_class=argparse.RawTextHelpFormatter
+    formatter_class=argparse.RawTextHelpFormatter,
 )
 
 parser.add_argument(
@@ -65,19 +65,26 @@ parser.add_argument(
     help="database name",
     metavar="DATABASE_NAME",
 )
-parser.add_argument(
+mode_group = parser.add_mutually_exclusive_group()
+mode_group.add_argument(
     "--fork",
     action="store_true",
     dest="fork",
     default=False,
     help="fork server process",
 )
+mode_group.add_argument(
+    "--cleanup-db",
+    action="store_true",
+    dest="cleanup_db",
+    help="delete old scan results from the database",
+)
 parser.add_argument(
     "--enable-gzip",
     action="store_true",
     dest="enable_gzip",
     default=False,
-    help="enable GZip compression for HTTP(S)"
+    help="enable GZip compression for HTTP(S)",
 )
 
 
