@@ -8,9 +8,9 @@ import openwifi.web.handlers.api.base_handler
 
 
 class InfoHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
-	"""
-	Gets the API info.
-	"""
+    """
+    Gets the API info.
+    """
 
     def get(self, *args, **kwargs):
         self.write(json.dumps({
