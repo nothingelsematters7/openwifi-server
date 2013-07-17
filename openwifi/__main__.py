@@ -66,13 +66,6 @@ parser.add_argument(
     metavar="DATABASE_NAME",
 )
 parser.add_argument(
-    "--test-mode",
-    action="store_true",
-    dest="test_mode",
-    default=False,
-    help="run in test mode",
-)
-parser.add_argument(
     "--fork",
     action="store_true",
     dest="fork",

@@ -28,10 +28,6 @@ class Application:
         self._logger = logging.getLogger(Application.__name__)
 
     def main(self, args):
-        # Checking for test mode.
-        if args.test_mode and not "test" in args.database_name:
-            self._logger.fatal("Database name must contain \"test\" substring in test mode.")
-            return openwifi.helpers.exit_codes.EX_USAGE
         # Initializing the database connection.
         self._logger.info("Connecting to the database ...")
         mongo_client = pymongo.MongoClient()
