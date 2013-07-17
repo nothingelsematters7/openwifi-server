@@ -31,9 +31,6 @@ class Application:
         # Initializing the database connection.
         self._logger.info("Connecting to the database ...")
         mongo_client = pymongo.MongoClient()
-        if args.test_mode:
-            self._logger.warning("Dropping database ...")
-            mongo_client.drop_database(args.database_name)
         db = pymongo.database.Database(mongo_client, args.database_name)
         self._logger.info("Creating indexes ...")
         db.scan_results.ensure_index([
