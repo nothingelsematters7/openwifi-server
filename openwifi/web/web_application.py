@@ -54,6 +54,7 @@ class WebApplication(tornado.web.Application):
             ), (
                 r"/api/info/",
                 openwifi.web.handlers.api.info_handler.InfoHandler,
+                {"cache": cache},
             )],
             gzip=enable_gzip,
         )
