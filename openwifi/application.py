@@ -55,7 +55,6 @@ class Application:
             db,
             cache,
             enable_gzip=args.enable_gzip,
-            test_mode=args.test_mode,
         )
         # Set up HTTP server.
         self._logger.info("HTTP port %s.", args.http_port)
