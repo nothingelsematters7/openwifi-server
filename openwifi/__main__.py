@@ -107,5 +107,5 @@ try:
         openwifi.helpers.exit_codes.EX_OK
     )
 except Exception as ex:
-    print(str(ex), file=sys.stderr)
+    print(repr(ex), file=sys.stderr)
     sys.exit(openwifi.helpers.exit_codes.EX_USAGE)
