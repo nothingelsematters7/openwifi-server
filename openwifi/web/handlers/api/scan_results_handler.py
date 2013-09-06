@@ -151,7 +151,7 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
                     validate = _validators.get(key)
                     # Check the value.
                     if not validate or not validate(value):
-                        raise ValueError("Validation failed: %s" % (key, value))
+                        raise ValueError("Validation failed: %s" % repr((key, value)))
                 # Check the document value.
                 if _filter_scan_result(scan_result):
                     # Attach the client ID and the user ID.
