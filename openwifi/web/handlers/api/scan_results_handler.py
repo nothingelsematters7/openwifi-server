@@ -33,7 +33,7 @@ def _validate_ssid(value):
     Validates SSID.
     """
 
-    return isinstance(value, str) and 0 < len(value) <= 32
+    return isinstance(value, str) and len(value) <= 32
 
 
 def _validate_timestamp(value):
@@ -152,6 +152,9 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
                     # Check the value.
                     if not validate or not validate(value):
                         raise ValueError("Validation failed: %s" % repr((key, value)))
+                if not scan_result["ssid"]:
+                    self._logger.warning("Skipped empty SSID: [cid=%s].", self._client_id)
+                    continue
                 # Check the document value.
                 if _filter_scan_result(scan_result):
                     # Attach the client ID and the user ID.
