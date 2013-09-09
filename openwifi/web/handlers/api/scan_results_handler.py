@@ -175,6 +175,6 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
                     else:
                         self._logger.debug("Saved scan result: %s", scan_result)
         except ValueError as ex:
-            self._logger.warning("Value error: %s on %s", ex, scan_results)
+            self._logger.warning("Value error: %s from client %s on %s", ex, self._client_id, scan_results)
             self.send_error(status_code=http.client.BAD_REQUEST)
             return
