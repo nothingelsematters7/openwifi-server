@@ -58,7 +58,7 @@ class CleanupDB:
             max_scan_results_per_bssid = max(max_scan_results_per_bssid, len(scan_results))
             # Sort the results by timestamp and skip ten of them.
             sorted_scan_results = sorted(scan_results, key=operator.itemgetter("ts"), reverse=True)
-            old_scan_results = sorted_scan_results[10:]
+            old_scan_results = sorted_scan_results[3:]
             if not old_scan_results:
                 # No old results.
                 continue
