@@ -92,7 +92,7 @@ class ScanResultsHandler(openwifi.web.handlers.api.base_handler.BaseHandler):
     """
 
     # Prevents the entire collection to be loaded into memory at once.
-    _GET_SCAN_RESULTS_LIMIT = 128
+    _GET_SCAN_RESULTS_LIMIT = 1024
 
     # noinspection PyMethodOverriding
     def initialize(self, db, cache):
